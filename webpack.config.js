@@ -24,11 +24,44 @@ const optimization = () => {
     return config
 }
 
+
+const fileName = ext => isDEv ? `[name].${ext}` : `[name].[hash].${ext}`
+const cssLoaders = property => {
+    const loaders = [
+        {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+                hmr: isDEv,
+                reloadAll: true
+            },
+        },
+        'css-loader'
+    ]
+
+    if (property) {
+        loaders.push(property)
+    }
+
+    return loaders
+}
+
+const babelOptions = (preset) => {
+    const options = {
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-proposal-class-properties']
+    }
+    if (preset){
+        options.presets.push(preset)
+    }
+    return options
+}
+
+
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
     entry: {
-        main: './index.js'
+        main: ['@babel/polyfill', './index.jsx']
     },
     resolve: {
         extensions: ['.js', '.jsx', '.css'],
@@ -37,25 +70,25 @@ module.exports = {
         }
     },
     output: {
-        filename: '[name].[contenthash].js',
+        filename: fileName('js'),
         path: path.resolve(__dirname, 'dist')
     },
     plugins: [
         new HTMLWebpackPlugin({
             template: './index.html',
             minify: {
-                collapseWhitespace:isProd
+                collapseWhitespace: isProd
             }
         }),
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin([
             {
-                from: path.resolve(__dirname, 'src/favicon.ico'),
+                from: path.resolve(__dirname, 'public/favicon.ico'),
                 to: path.resolve(__dirname, 'dist')
             }
         ]),
         new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css'
+            filename: fileName('css')
         })
 
 
@@ -63,21 +96,17 @@ module.exports = {
     optimization: optimization(),
     devServer: {
         port: 4200,
-        hot:isDEv
+        hot: isDEv
     },
     module: {
         rules: [
             {
                 test: /\.css$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            hmr: isDEv,
-                            reloadAll: true
-                        },
-                    },
-                    'css-loader']
+                use: cssLoaders()
+            },
+            {
+                test: /\.s[ac]ss$/,
+                use: cssLoaders('sass-loader')
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
@@ -86,7 +115,33 @@ module.exports = {
             {
                 test: /\.(ttf)$/,
                 use: ['file-loader']
-            }
+            },
+
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: {
+                    loader: 'babel-loader',
+                    options: babelOptions()
+                }
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                loader: {
+                    loader: 'babel-loader',
+                    options: babelOptions('@babel/preset-typescript')
+                }
+            },
+            {
+                test: /\.jsx$/,
+                exclude: /node_modules/,
+                loader: {
+                    loader: 'babel-loader',
+                    options: babelOptions('@babel/preset-react')
+                }
+            },
+
         ]
     }
 }
