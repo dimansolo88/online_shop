@@ -1,5 +1,6 @@
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 const Products = ({ products }) => {
   return (
@@ -8,10 +9,14 @@ const Products = ({ products }) => {
         <div key={p.id}> {p.name} </div>
       ))}
     </div>
-  );
-};
+  )
+}
+
+Products.propTypes = {
+  products: PropTypes.array,
+}
 
 const mapStateToProps = state => ({
-  products: state.products.products
-});
-export default connect(mapStateToProps, {})(Products);
+  products: state.products.products,
+})
+export default connect(mapStateToProps, {})(Products)
