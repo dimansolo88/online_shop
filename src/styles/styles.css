@@ -1,14 +1,14 @@
 @import "fonts.css";
 
 body {
-    font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
-.wrapper{
-    padding-top: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
+.wrapper {
+  padding-top: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
