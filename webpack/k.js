@@ -70,24 +70,24 @@ const jsLoaders = () => {
 }
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
+  context: path.resolve(__dirname, '/src'),
   mode: 'development',
   entry: {
-    main: ['@babel/polyfill', './index.jsx'],
+    main: ['@babel/polyfill', './index.js'],
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, '/src'),
     },
   },
   output: {
     filename: fileName('js'),
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '/dist'),
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: './index.html',
+      template: path.resolve(__dirname, '../public/index.html'),
       minify: {
         collapseWhitespace: isProd,
       },
@@ -95,8 +95,8 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, 'public/favicon.ico'),
-        to: path.resolve(__dirname, 'dist'),
+        from: path.resolve(__dirname, '../public/favicon.ico'),
+        to: path.resolve(__dirname, '/dist'),
       },
     ]),
     new MiniCssExtractPlugin({
